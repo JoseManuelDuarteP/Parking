@@ -70,12 +70,12 @@ public class Estancia {
 
         } else if (this.vehiculo.getTipo() == TipoVehiculo.RESIDENTE) {
             cobro = duracion * TipoVehiculo.RESIDENTE.getTarifa();
-            this.importe = cobro;
+            this.importe += cobro;
             return cobro;
 
         } else {
             cobro = duracion * TipoVehiculo.NO_RESIDENTE.getTarifa();
-            this.importe = cobro;
+            this.importe += cobro;
             return cobro;
         }
     }
