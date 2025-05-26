@@ -1,11 +1,12 @@
 package org.example;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Vehiculo {
     private String matricula;
     private Enum<TipoVehiculo> tipo;
-    private List<Estancia> estancias;
+    private List<Estancia> estancias = new ArrayList<>();
 
     Vehiculo(String matricula,TipoVehiculo tipo) {
         this.matricula = matricula;

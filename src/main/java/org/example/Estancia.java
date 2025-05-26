@@ -2,11 +2,11 @@ package org.example;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Estancia {
-    private LocalDate fechaEntrada = LocalDate.now();
-    private LocalDate fechaSalida;
+    private LocalDateTime fechaEntrada = LocalDateTime.now();
+    private LocalDateTime fechaSalida;
     private Duration duracion;
     private Vehiculo vehiculo;
     private double importe;
@@ -31,19 +31,19 @@ public class Estancia {
         this.vehiculo = vehiculo;
     }
 
-    public LocalDate getFechaEntrada() {
+    public LocalDateTime getFechaEntrada() {
         return fechaEntrada;
     }
 
-    public void setFechaEntrada(LocalDate fechaEntrada) {
+    public void setFechaEntrada(LocalDateTime fechaEntrada) {
         this.fechaEntrada = fechaEntrada;
     }
 
-    public LocalDate getFechaSalida() {
+    public LocalDateTime getFechaSalida() {
         return fechaSalida;
     }
 
-    public void setFechaSalida(LocalDate fechaSalida) {
+    public void setFechaSalida(LocalDateTime fechaSalida) {
         this.fechaSalida = fechaSalida;
     }
 
@@ -66,16 +66,19 @@ public class Estancia {
 
         if (this.vehiculo.getTipo() == TipoVehiculo.OFICIAL) {
             this.importe = cobro;
+            this.duracion = Duration.between(fechaEntrada, fechaSalida);
             return cobro;
 
         } else if (this.vehiculo.getTipo() == TipoVehiculo.RESIDENTE) {
             cobro = duracion * TipoVehiculo.RESIDENTE.getTarifa();
             this.importe += cobro;
+            this.duracion = Duration.between(fechaEntrada, fechaSalida);
             return cobro;
 
         } else {
             cobro = duracion * TipoVehiculo.NO_RESIDENTE.getTarifa();
             this.importe += cobro;
+            System.out.println("Importe: " + cobro);
             return cobro;
         }
     }
