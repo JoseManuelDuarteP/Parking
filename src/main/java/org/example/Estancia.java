@@ -1,13 +1,12 @@
 package org.example;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Estancia {
     private LocalDateTime fechaEntrada = LocalDateTime.now();
     private LocalDateTime fechaSalida;
-    private Duration duracion;
+    private int duracion;
     private Vehiculo vehiculo;
     private double importe;
 
@@ -15,11 +14,11 @@ public class Estancia {
         this.vehiculo = vehiculo;
     }
 
-    public Duration getDuracion() {
+    public int getDuracion() {
         return duracion;
     }
 
-    public void setDuracion(Duration duracion) {
+    public void setDuracion(int duracion) {
         this.duracion = duracion;
     }
 
@@ -60,26 +59,15 @@ public class Estancia {
         return "Duración: " + duracion + " - Vehiculo: " + vehiculo.getMatricula();
     }
 
-    public double cobro() {
+    public void cobro() {
         int duracion = (int) Duration.between(fechaEntrada, fechaSalida).toMinutes();
-        double cobro = 0;
+        double cobro = duracion * this.getVehiculo().getTipo().getTarifa();
 
-        if (this.vehiculo.getTipo() == TipoVehiculo.OFICIAL) {
-            this.importe = cobro;
-            this.duracion = Duration.between(fechaEntrada, fechaSalida);
-            return cobro;
+        this.duracion = duracion;
+        this.importe = cobro;
 
-        } else if (this.vehiculo.getTipo() == TipoVehiculo.RESIDENTE) {
-            cobro = duracion * TipoVehiculo.RESIDENTE.getTarifa();
-            this.importe += cobro;
-            this.duracion = Duration.between(fechaEntrada, fechaSalida);
-            return cobro;
-
-        } else {
-            cobro = duracion * TipoVehiculo.NO_RESIDENTE.getTarifa();
-            this.importe += cobro;
+        if(this.vehiculo.getTipo().equals(TipoVehiculo.NO_RESIDENTE)) {
             System.out.println("Importe: " + cobro);
-            return cobro;
         }
     }
 }

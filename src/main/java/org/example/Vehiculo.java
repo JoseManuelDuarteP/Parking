@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Vehiculo {
     private String matricula;
-    private Enum<TipoVehiculo> tipo;
+    private TipoVehiculo tipo;
     private List<Estancia> estancias = new ArrayList<>();
 
     Vehiculo(String matricula,TipoVehiculo tipo) {
@@ -21,11 +21,11 @@ public class Vehiculo {
         this.matricula = matricula;
     }
 
-    public Enum<TipoVehiculo> getTipo() {
+    public TipoVehiculo getTipo() {
         return tipo;
     }
 
-    public void setTipo(Enum<TipoVehiculo> tipo) {
+    public void setTipo(TipoVehiculo tipo) {
         this.tipo = tipo;
     }
 
@@ -40,5 +40,29 @@ public class Vehiculo {
     @Override
     public String toString() {
         return "Matrícula: " + this.matricula + " - Tipo: " + this.tipo;
+    }
+
+    public void limpiarEstancias() {
+        estancias.clear();
+    }
+
+    public int tiempoTotal() {
+        int tiempo = 0;
+
+        for (Estancia estancia : estancias) {
+            tiempo += estancia.getDuracion();
+        }
+
+        return tiempo;
+    }
+
+    public double pagoTotal() {
+        int tiempo = 0;
+
+        for (Estancia estancia : estancias) {
+            tiempo += estancia.getDuracion();
+        }
+
+        return tiempo * this.getTipo().getTarifa();
     }
 }

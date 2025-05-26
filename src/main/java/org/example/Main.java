@@ -1,5 +1,8 @@
 package org.example;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +13,15 @@ public class Main {
     static List<Vehiculo> vehiculos = new ArrayList<>();
     static List<Estancia> estanciasActuales = new ArrayList<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Vehiculo v = new Vehiculo("ZZZ", TipoVehiculo.OFICIAL);
         vehiculos.add(v);
-        v = new Vehiculo("AAA", TipoVehiculo.NO_RESIDENTE);
+        v = new Vehiculo("AAA", TipoVehiculo.RESIDENTE);
         vehiculos.add(v);
 
         Scanner sc = new Scanner(System.in);
         int opcion;
+        String nom;
 
         do {
 
@@ -25,6 +29,8 @@ public class Main {
             System.out.println("2. Registrar salida");
             System.out.println("3. Dar de alta coche oficial");
             System.out.println("4. Dar de alta coche residente");
+            System.out.println("5. Empezar mes");
+            System.out.println("6. Genera informe de pagos de residentes");
             System.out.println("0. Salir");
             opcion = sc.nextInt();
             sc.nextLine();
@@ -45,6 +51,24 @@ public class Main {
                 case 4:
                     darDeAltaResidente(sc);
                     break;
+
+                case 5:
+                    empezarMes(sc);
+                    break;
+
+                case 6:
+                    System.out.println("Introduzca nombre del archivo");
+                    nom = sc.nextLine();
+                    generarInforme(nom);
+                    break;
+
+                case 7:
+                    verParking();
+                    break;
+
+                case 0:
+                    System.out.println("Saliendo...");
+                    return;
 
                 default:
                     System.out.println("Opción incorrecta");
@@ -152,13 +176,42 @@ public class Main {
 
         if (opcion.equalsIgnoreCase("S")) {
             for (Vehiculo v : vehiculos) {
-                
+                v.limpiarEstancias();
             }
 
         } else if (opcion.equalsIgnoreCase("N")) {
             return;
         } else {
             System.out.println("Opcion incorrecta");
+        }
+    }
+
+    public static void generarInforme(String nombre) throws IOException {
+        File informe = new File(nombre + ".txt");
+
+        try {
+            FileWriter fw = new FileWriter(informe);
+            fw.write("Matrícula:    Tiempo estacionado (min.):    Cantidad a pagar:\n");
+
+            List<Vehiculo> vehiculosRes = vehiculos.stream()
+                    .filter(p -> p.getTipo().equals(TipoVehiculo.RESIDENTE)).toList();
+
+            for (Vehiculo v : vehiculosRes) {
+                fw.write(v.getMatricula() + "           " + v.tiempoTotal() + "                             " + v.pagoTotal() + "\n");
+            }
+
+            fw.flush();
+            fw.close();
+
+        } catch (IOException e) {
+            System.out.println("No se pudo guardar el informe");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void verParking() {
+        for (Vehiculo v : vehiculos) {
+            System.out.println(v);
         }
     }
 }
