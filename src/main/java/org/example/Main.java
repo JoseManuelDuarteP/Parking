@@ -31,6 +31,7 @@ public class Main {
             System.out.println("4. Dar de alta coche residente");
             System.out.println("5. Empezar mes");
             System.out.println("6. Genera informe de pagos de residentes");
+            System.out.println("7. Ver parking");
             System.out.println("0. Salir");
             opcion = sc.nextInt();
             sc.nextLine();
@@ -154,7 +155,7 @@ public class Main {
         }
     }
 
-    public static void darDeAltaOficial(Scanner sc) {
+    private static void darDeAltaOficial(Scanner sc) {
         System.out.println("Introduzca la matrícula: ");
         String matricula = sc.nextLine();
 
@@ -162,7 +163,7 @@ public class Main {
         vehiculos.add(v);
     }
 
-    public static void darDeAltaResidente(Scanner sc) {
+    private static void darDeAltaResidente(Scanner sc) {
         System.out.println("Introduzca la matrícula: ");
         String matricula = sc.nextLine();
 
@@ -170,7 +171,7 @@ public class Main {
         vehiculos.add(v);
     }
 
-    public static void empezarMes(Scanner sc) {
+    private static void empezarMes(Scanner sc) {
         System.out.println("¿Está seguro? (S/N)");
         String opcion = sc.nextLine();
 
@@ -186,7 +187,7 @@ public class Main {
         }
     }
 
-    public static void generarInforme(String nombre) throws IOException {
+    private static void generarInforme(String nombre) throws IOException {
         File informe = new File(nombre + ".txt");
 
         try {
@@ -200,6 +201,8 @@ public class Main {
                 fw.write(v.getMatricula() + "           " + v.tiempoTotal() + "                             " + v.pagoTotal() + "\n");
             }
 
+            fw.write("\nAVISO: ESTE INFORME NO TIENE EN CUENTA LA ESTANCIA ACTUAL EN CASO DE HABERLA");
+
             fw.flush();
             fw.close();
 
@@ -209,7 +212,7 @@ public class Main {
         }
     }
 
-    public static void verParking() {
+    private static void verParking() {
         for (Vehiculo v : vehiculos) {
             System.out.println(v);
         }
