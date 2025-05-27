@@ -50,7 +50,7 @@ public class MainGrafico extends Application {
         Button generarInforme = new Button("Generar informe");
         generarInforme.setOnAction(e -> generarInforme());
         Button verParking = new Button("Ver parking");
-        verParking.setOnAction(e -> verParking(estanciasActuales));
+        verParking.setOnAction(e -> verParking());
         Button salir = new Button("Salir");
         salir.setStyle("-fx-font-weight: bold");
         salir.setOnAction(e -> primaryStage.close());
@@ -295,7 +295,7 @@ public class MainGrafico extends Application {
         }
     }
 
-    private static void verParking(List<Estancia> estanciasAct) {
+    private static void verParking() {
         int columnas = 5;
         int fila;
         int columna;
