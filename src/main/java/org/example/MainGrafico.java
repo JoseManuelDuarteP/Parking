@@ -2,6 +2,7 @@ package org.example;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -11,6 +12,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -316,7 +318,12 @@ public class MainGrafico extends Application {
             layout.add(plaza, columna, fila);
         }
 
-        Scene scene = new Scene(layout, 600, 400);
+        Label consejo = new Label("Consejo: Poner el ratón encima de la plaza porporciona información del coche");
+
+        VBox contenedor = new VBox(10, layout, consejo);
+        contenedor.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(contenedor, 600, 400);
         ventanaParking.setScene(scene);
         ventanaParking.show();
     }
@@ -327,15 +334,27 @@ public class MainGrafico extends Application {
         rect.setFill(Color.LIGHTGREEN);
 
         Label label;
+        StackPane stackPane;
+
         if (index < estancias.size()) {
             String matricula = estancias.get(index).getVehiculo().getMatricula();
             label = new Label(matricula);
             rect.setFill(Color.LIGHTSALMON);
+
+            stackPane = new StackPane(rect, label);
+
+            Vehiculo vehiculo = estancias.get(index).getVehiculo();
+            Tooltip tooltip = new Tooltip(vehiculo.toString());
+            tooltip.setStyle("-fx-background-color: #fcf3cf; -fx-text-fill: black; -fx-font-weight: bold;");
+            Tooltip.install(stackPane, tooltip);
+
         } else {
             label = new Label("Libre");
+            stackPane = new StackPane(rect, label);
         }
+        label.setStyle("-fx-font-weight: bold;");
 
-        return new StackPane(rect, label);
+        return stackPane;
     }
 
     private static void mostrarAlerta(String titulo, String mensaje) {

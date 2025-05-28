@@ -18,4 +18,21 @@ public enum TipoVehiculo {
     public void setTarifa(double tarifa) {
         this.tarifa = tarifa;
     }
+
+    @Override
+    public String toString() {
+        switch (this) {
+            case OFICIAL:
+                return "Oficial";
+
+            case RESIDENTE:
+                return "Residente";
+
+            case NO_RESIDENTE:
+                return "No Residente";
+
+            default:
+                return "";
+        }
+    }
 }
