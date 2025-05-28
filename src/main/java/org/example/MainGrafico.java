@@ -2,7 +2,6 @@ package org.example;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -12,7 +11,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -57,13 +55,13 @@ public class MainGrafico extends Application {
         salir.setStyle("-fx-font-weight: bold");
         salir.setOnAction(e -> primaryStage.close());
 
-        VBox vbox = new VBox(10, regEnt, regSal, darAltOfi, darAltRes
+        VBox botones = new VBox(10, regEnt, regSal, darAltOfi, darAltRes
         , empezarMes, generarInforme, verParking, salir);
-        vbox.setStyle("-fx-alignment: center;");
+        botones.setStyle("-fx-alignment: center;");
 
         BorderPane root = new BorderPane();
         root.setTop(titulo);
-        root.setCenter(vbox);
+        root.setCenter(botones);
         BorderPane.setAlignment(titulo, Pos.CENTER);
 
         Scene scene = new Scene(root, 400, 400);
@@ -192,6 +190,11 @@ public class MainGrafico extends Application {
         registrarAlta.setOnAction(e -> {
             String matricula = textMatricula.getText();
 
+            if (matricula.isEmpty()) {
+                mostrarAlerta("Error", "Matrícula vacía");
+                return;
+            }
+
             Vehiculo v = new Vehiculo(matricula, TipoVehiculo.OFICIAL);
             vehiculos.add(v);
 
@@ -217,6 +220,11 @@ public class MainGrafico extends Application {
 
         registrarAlta.setOnAction(e -> {
             String matricula = textMatricula.getText();
+
+            if (matricula.isEmpty()) {
+                mostrarAlerta("Error", "Matrícula vacía");
+                return;
+            }
 
             Vehiculo v = new Vehiculo(matricula, TipoVehiculo.RESIDENTE);
             vehiculos.add(v);
