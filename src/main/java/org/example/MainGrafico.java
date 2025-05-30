@@ -1,20 +1,33 @@
 package org.example;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +39,7 @@ public class MainGrafico extends Application {
     static List<Estancia> estanciasActuales = new ArrayList<>();
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws MalformedURLException {
         Vehiculo v = new Vehiculo("AAA", TipoVehiculo.OFICIAL);
         vehiculos.add(v);
         v = new Vehiculo("BBB", TipoVehiculo.RESIDENTE);
@@ -35,7 +48,7 @@ public class MainGrafico extends Application {
         vehiculos.add(v);
 
         Label titulo = new Label("Gestión de Parking");
-        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 20");
+        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 35; -fx-text-fill: RED;");
 
         Button regEnt = new Button("Registrar entrada");
         regEnt.setOnAction(e -> registrarEntrada());
@@ -52,19 +65,38 @@ public class MainGrafico extends Application {
         Button verParking = new Button("Ver parking");
         verParking.setOnAction(e -> verParking());
         Button salir = new Button("Salir");
-        salir.setStyle("-fx-font-weight: bold");
         salir.setOnAction(e -> primaryStage.close());
 
         VBox botones = new VBox(10, regEnt, regSal, darAltOfi, darAltRes
         , empezarMes, generarInforme, verParking, salir);
         botones.setStyle("-fx-alignment: center;");
+        botones.setFillWidth(true);
+
+        for (Node b : botones.getChildren()) {
+            b.setStyle("-fx-pref-width: 180; -fx-pref-height: 30;");
+            VBox.setMargin(b, new Insets(0, 0, 0, 30));
+        }
+        salir.setStyle("-fx-pref-width: 180; -fx-pref-height: 30;-fx-font-weight: bold");
+
+        VBox clima = verTiempo();
 
         BorderPane root = new BorderPane();
         root.setTop(titulo);
-        root.setCenter(botones);
+        root.setLeft(botones);
+        root.setRight(clima);
         BorderPane.setAlignment(titulo, Pos.CENTER);
+        BorderPane.setAlignment(clima, Pos.CENTER);
 
-        Scene scene = new Scene(root, 400, 400);
+        Image fondo = new Image(getClass().getResource("/parking.jpg").toExternalForm());
+        BackgroundImage backgroundImage = new BackgroundImage(
+                fondo,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, true, false));
+        root.setBackground(new Background(backgroundImage));
+
+        Scene scene = new Scene(root, 900, 534);
         primaryStage.setTitle("Parking");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -155,9 +187,10 @@ public class MainGrafico extends Application {
                 estanciaAct.get().cobro();
 
                 if (vehiculoAct.get().getTipo().equals(TipoVehiculo.NO_RESIDENTE)) {
+                    mostrarAlerta("Éxito", "Salida registrada exitosamente"
+                    + "\nImporte: " + estanciaAct.get().getImporte() + "€");
                     vehiculos.remove(vehiculoAct.get());
                     estanciasActuales.remove(estanciaAct.get());
-                    mostrarAlerta("Éxito", "Salida registrada exitosamente");
                     return;
                 }
 
@@ -373,5 +406,59 @@ public class MainGrafico extends Application {
         alert.showAndWait();
     }
 
+    private static VBox verTiempo() throws MalformedURLException {
+        String token = "252ae1fd9f2285dbfc1a113d113462ce";
+        String loca = "Castellon";
+        String urlStr = "http://api.weatherstack.com/current?access_key=" + token + "&query=" + loca;
+
+        try {
+            URL url = new URL(urlStr);
+            HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder content = new StringBuilder();
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
+            in.close();
+            conn.disconnect();
+
+            JsonObject json = JsonParser.parseString(content.toString()).getAsJsonObject();
+            JsonObject current = json.getAsJsonObject("current");
+
+            int temp = current.get("temperature").getAsInt();
+
+            JsonArray descriptions = current.getAsJsonArray("weather_descriptions");
+            String desc = descriptions.get(0).getAsString();
+
+            JsonArray icons = current.getAsJsonArray("weather_icons");
+            String iconUrl = icons.get(0).getAsString();
+
+            JsonObject location = json.getAsJsonObject("location");
+            String ciudad = location.get("name").getAsString();
+
+            javafx.scene.image.ImageView icon = new javafx.scene.image.ImageView(iconUrl);
+            icon.setFitHeight(50);
+            icon.setFitWidth(50);
+            Label l1 = new Label(ciudad);
+            Label l2 = new Label("Temperatura: " + temp + "°C");
+            Label l3 = new Label("Descripción: " + desc);
+
+            VBox layout = new VBox(10, icon, l1, l2, l3);
+            layout.setAlignment(Pos.CENTER);
+            layout.setStyle("-fx-padding: 20; -fx-background-color: white; " +
+                    "-fx-border-color: lightgray; -fx-border-radius: 5; -fx-background-radius: 5;");
+            layout.setMaxHeight(200);
+            return layout;
+
+        } catch (Exception ex) {
+            VBox errorBox = new VBox(new Label("Error: " + ex.getMessage()));
+            errorBox.setAlignment(Pos.CENTER);
+            return errorBox;
+        }
+
+    }
 
 }
