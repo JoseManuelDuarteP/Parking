@@ -408,7 +408,7 @@ public class MainGrafico extends Application {
 
     private static VBox verTiempo() throws MalformedURLException {
         String token = "252ae1fd9f2285dbfc1a113d113462ce";
-        String loca = "Castellon";
+        String loca = "Valencia";
         String urlStr = "http://api.weatherstack.com/current?access_key=" + token + "&query=" + loca;
 
         try {
