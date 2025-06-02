@@ -59,6 +59,7 @@ public class Estancia {
         return "Duración: " + duracion + " - Vehiculo: " + vehiculo.getMatricula();
     }
 
+    //Se cobra a un vehiculo su estancia actual
     public void cobro() {
         int duracion = (int) Duration.between(fechaEntrada, fechaSalida).toMinutes();
         double cobro = duracion * this.getVehiculo().getTipo().getTarifa();
@@ -66,6 +67,7 @@ public class Estancia {
         this.duracion = duracion;
         this.importe = cobro;
 
+        //Si el vehiculo es no residente, se cobra al instante
         if(this.vehiculo.getTipo().equals(TipoVehiculo.NO_RESIDENTE)) {
             System.out.println("Importe: " + cobro);
         }

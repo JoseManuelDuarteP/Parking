@@ -1,6 +1,5 @@
 package org.example;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -25,9 +24,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +36,7 @@ public class MainGrafico extends Application {
     static List<Estancia> estanciasActuales = new ArrayList<>();
 
     @Override
-    public void start(Stage primaryStage) throws MalformedURLException {
+    public void start(Stage primaryStage) {
         Vehiculo v = new Vehiculo("AAA", TipoVehiculo.OFICIAL);
         vehiculos.add(v);
         v = new Vehiculo("BBB", TipoVehiculo.RESIDENTE);
@@ -79,6 +76,7 @@ public class MainGrafico extends Application {
         salir.setStyle("-fx-pref-width: 180; -fx-pref-height: 30;-fx-font-weight: bold");
 
         VBox clima = verTiempo();
+        BorderPane.setMargin(clima, new Insets(0, 30, 0, 0));
 
         BorderPane root = new BorderPane();
         root.setTop(titulo);
@@ -406,9 +404,9 @@ public class MainGrafico extends Application {
         alert.showAndWait();
     }
 
-    private static VBox verTiempo() throws MalformedURLException {
+    private static VBox verTiempo() {
         String token = "252ae1fd9f2285dbfc1a113d113462ce";
-        String loca = "Valencia";
+        String loca = "Castellon de la Plana";
         String urlStr = "http://api.weatherstack.com/current?access_key=" + token + "&query=" + loca;
 
         try {

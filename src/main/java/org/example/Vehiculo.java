@@ -46,6 +46,7 @@ public class Vehiculo {
         estancias.clear();
     }
 
+    //Tiempo total de aparcamiento de un Vehiculo
     public int tiempoTotal() {
         int tiempo = 0;
 
@@ -56,6 +57,7 @@ public class Vehiculo {
         return tiempo;
     }
 
+    //Pago total que debe realizar un vehículo, basado en el tiempo total de sus estancias * tarifa del tipo
     public double pagoTotal() {
         int tiempo = 0;
 

@@ -79,12 +79,14 @@ public class Main {
         } while (true);
     }
 
+    //Registrar entradas al parking
     private static void registrarEntrada(Scanner sc) {
         String opcion;
 
         System.out.println("¿Se trata de un vehiculo no propietario? (S/N)");
         opcion = sc.nextLine();
 
+        //Si el vehículo que ingresa es no residente, se crea una instancia temporal
         if (opcion.equalsIgnoreCase("S")) {
             System.out.println("Ingrese matrícula: ");
             String matricula = sc.nextLine();
@@ -106,6 +108,7 @@ public class Main {
             Optional<Vehiculo> vehiculoAct = vehiculos.stream()
                     .filter(p -> p.getMatricula().equals(matricula)).findFirst();
 
+            //Comprueba si el vehiculo está dado de alta o existe
             if (vehiculoAct.isPresent()) {
                 Estancia es = new Estancia(vehiculoAct.get());
                 estanciasActuales.add(es);
@@ -122,6 +125,7 @@ public class Main {
 
     }
 
+    //Registrar salidas
     private static void registrarSalida(Scanner sc) {
         String matricula;
         LocalDateTime fechaSalida = LocalDateTime.now();
@@ -132,6 +136,7 @@ public class Main {
         Optional<Estancia> estanciaAct = estanciasActuales.stream()
                 .filter(p -> p.getVehiculo().getMatricula().equals(matricula)).findFirst();
 
+        //Comprueba que el vehiculo exista o esté aparcado
         if (estanciaAct.isPresent()) {
             Optional<Vehiculo> vehiculoAct = vehiculos.stream()
                     .filter(p -> p.getMatricula().equals(matricula)).findFirst();
@@ -139,7 +144,8 @@ public class Main {
             estanciaAct.get().setFechaSalida(fechaSalida);
             estanciaAct.get().cobro();
 
-            if (vehiculoAct.get().getTipo().equals(TipoVehiculo.NO_RESIDENTE)) { //Si el vehículo es no residente no nos interesa guardar su estancia ni a él
+            //Si el vehículo es no residente no nos interesa guardar su estancia ni a él
+            if (vehiculoAct.get().getTipo().equals(TipoVehiculo.NO_RESIDENTE)) {
                 vehiculos.remove(vehiculoAct.get());
                 estanciasActuales.remove(estanciaAct.get());
                 System.out.println("Salida registrada exitosamente");
@@ -171,6 +177,7 @@ public class Main {
         vehiculos.add(v);
     }
 
+    //Borra todas las estancias de todos los vehiculos registrados
     private static void empezarMes(Scanner sc) {
         System.out.println("¿Está seguro? (S/N)");
         String opcion = sc.nextLine();
@@ -187,6 +194,8 @@ public class Main {
         }
     }
 
+    //Genera un .txt con la matrícula, tiempo total y pago total de todos los vehiculos registrados
+    //No tiene en cuenta la estancia actual (vehiculos aparcados actualmente)
     private static void generarInforme(String nombre) throws IOException {
         File informe = new File(nombre + ".txt");
 
